@@ -18,7 +18,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/netstream';
+const MONGODB_URI = process.env.MONGODB_URI;
 
 // ==========================================
 // MIDDLEWARE
@@ -75,14 +75,34 @@ app.use('/api/auth/register', authLimiter);
 // ==========================================
 
 /**
- * Connect to MongoDB
+ * Connect to MongoDB (Atlas primary, in-memory fallback for dev)
  */
 const connectDB = async () => {
+  // Try Atlas first
+  if (MONGODB_URI) {
+    try {
+      const conn = await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+      console.log(`✅ MongoDB Atlas Connected: ${conn.connection.host}`);
+      return;
+    } catch (error) {
+      console.warn(`⚠️  Atlas connection failed: ${error.message}`);
+      if (process.env.NODE_ENV !== 'development') {
+        console.error('❌ Cannot connect to MongoDB in production. Exiting.');
+        process.exit(1);
+      }
+      console.log('🔄 Falling back to in-memory MongoDB for development...');
+    }
+  }
+
+  // Fallback: MongoMemoryServer (dev only)
   try {
-    const conn = await mongoose.connect(MONGODB_URI);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error(`Error connecting to MongoDB: ${error.message}`);
+    const mongod = await MongoMemoryServer.create();
+    const uri = mongod.getUri();
+    const conn = await mongoose.connect(uri);
+    console.log(`✅ In-Memory MongoDB Connected: ${conn.connection.host}`);
+    console.log('⚠️  NOTE: Data will NOT persist between restarts (in-memory mode).');
+  } catch (memErr) {
+    console.error(`❌ Failed to start in-memory MongoDB: ${memErr.message}`);
     process.exit(1);
   }
 };
