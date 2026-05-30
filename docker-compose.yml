@@ -2,11 +2,11 @@ version: '3.8'
 
 services:
   client:
-    build: 
+    build:
       context: ./client
-    ports: 
+    ports:
       - "5173:5173"
-    volumes: 
+    volumes:
       - ./client:/app
       - /app/node_modules
     environment:
@@ -15,23 +15,23 @@ services:
       - server
 
   server:
-    build: 
+    build:
       context: ./server
-    ports: 
+    ports:
       - "5000:5000"
     volumes:
       - ./server:/app
       - /app/node_modules
-    depends_on: 
+    depends_on:
       - mongodb
-    env_file: 
+    env_file:
       - ./server/.env
 
   mongodb:
     image: mongo:7
-    ports: 
+    ports:
       - "27017:27017"
-    volumes: 
+    volumes:
       - mongo_data:/data/db
 
 volumes:
