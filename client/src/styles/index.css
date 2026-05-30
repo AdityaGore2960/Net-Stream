@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ns-black: #0a0a0a;
+  --ns-dark: #141414;
+  --ns-dark-2: #181818;
+  --ns-dark-3: #222222;
+  --ns-red: #e50914;
+  --ns-red-hover: #f40612;
+  --ns-white: #ffffff;
+  --ns-gray-1: #999999;
+  --ns-gray-2: #666666;
+  --ns-gray-3: #333333;
+}
+
+body {
+  background-color: var(--ns-black);
+  color: var(--ns-white);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ns-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ns-gray-3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ns-gray-2);
+}
+
+/* Hide scrollbar for content rows but allow scrolling */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
