@@ -9,6 +9,9 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import authRoutes from './routes/auth.routes.js';
+import userRoutes from './routes/user.routes.js';
+import watchlistRoutes from './routes/watchlist.routes.js';
 
 // Load environment variables
 dotenv.config();
@@ -78,32 +81,20 @@ app.use('/api/auth/register', authLimiter);
  * Connect to MongoDB (Atlas primary, in-memory fallback for dev)
  */
 const connectDB = async () => {
-  // Try Atlas first
-  if (MONGODB_URI) {
-    try {
-      const conn = await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
-      console.log(`✅ MongoDB Atlas Connected: ${conn.connection.host}`);
-      return;
-    } catch (error) {
-      console.warn(`⚠️  Atlas connection failed: ${error.message}`);
-      if (process.env.NODE_ENV !== 'development') {
-        console.error('❌ Cannot connect to MongoDB in production. Exiting.');
-        process.exit(1);
-      }
-      console.log('🔄 Falling back to in-memory MongoDB for development...');
-    }
-  }
-
-  // Fallback: MongoMemoryServer (dev only)
   try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('✅ MongoDB Atlas Connected');
+  } catch (err) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('❌ Atlas connection failed in production. Exiting.');
+      process.exit(1);
+    }
+
+    // Dev only fallback
+    console.warn('⚠️ Falling back to in-memory MongoDB...');
     const mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    const conn = await mongoose.connect(uri);
-    console.log(`✅ In-Memory MongoDB Connected: ${conn.connection.host}`);
-    console.log('⚠️  NOTE: Data will NOT persist between restarts (in-memory mode).');
-  } catch (memErr) {
-    console.error(`❌ Failed to start in-memory MongoDB: ${memErr.message}`);
-    process.exit(1);
+    await mongoose.connect(mongod.getUri());
+    console.log('✅ In-Memory MongoDB Connected');
   }
 };
 
@@ -115,11 +106,6 @@ const connectDB = async () => {
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'NetStream API is running' });
 });
-
-// Import and use actual routes (to be created)
-import authRoutes from './routes/auth.routes.js';
-import userRoutes from './routes/user.routes.js';
-import watchlistRoutes from './routes/watchlist.routes.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
