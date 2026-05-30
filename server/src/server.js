@@ -117,9 +117,9 @@ app.get('/api/health', (req, res) => {
 });
 
 // Import and use actual routes (to be created)
-import authRoutes from '../routes/auth.routes.js';
-import userRoutes from '../routes/user.routes.js';
-import watchlistRoutes from '../routes/watchlist.routes.js';
+import authRoutes from './routes/auth.routes.js';
+import userRoutes from './routes/user.routes.js';
+import watchlistRoutes from './routes/watchlist.routes.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
