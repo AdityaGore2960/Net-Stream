@@ -11,9 +11,9 @@ export const useUIStore = create((set) => ({
   activeGenre: null,
 
   // Detail Modal
-  selectedItem:    null,
-  selectedType:    null, // 'movie' | 'tv'
-  isDetailOpen:    false,
+  selectedItem: null,
+  selectedType: null, // 'movie' | 'tv'
+  isDetailOpen: false,
 
   /**
    * Actions
