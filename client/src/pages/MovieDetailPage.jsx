@@ -200,11 +200,11 @@ const MovieDetailPage = () => {
               <span>Back</span>
             </button>
 
-            <div style={nowPlaying}>
+            <div className="hidden md:flex flex-col items-center gap-[2px] absolute left-1/2 -translate-x-1/2 text-center w-[50%]">
               <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                 You're Watching
               </span>
-              <span style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 700 }}>
+              <span className="truncate w-full" style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 700 }}>
                 {title}{year ? ` (${year})` : ''}
               </span>
             </div>
@@ -332,16 +332,6 @@ const backBtn = {
   cursor:     'pointer',
   transition: 'color 0.2s ease',
   flexShrink: 0,
-};
-
-const nowPlaying = {
-  display:        'flex',
-  flexDirection:  'column',
-  alignItems:     'center',
-  gap:            2,
-  position:       'absolute',
-  left:           '50%',
-  transform:      'translateX(-50%)',
 };
 
 /* Circular ✕ button — top-right, player modal */

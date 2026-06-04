@@ -194,7 +194,7 @@ const HeroBanner = ({ movies }) => {
         </p>
 
         {/* CTA buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {/* Play */}
           <Link
             to={`/${movie.media_type === 'tv' ? 'tv' : 'movie'}/${movie.id}`}
