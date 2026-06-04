@@ -6,14 +6,14 @@ import MovieCard from '../Cards/MovieCard';
 /**
  * Netflix-style horizontal scrolling content row
  */
-const ContentRow = ({ title, fetchHook, type = 'movie', isLarge = false }) => {
-  const rowRef         = useRef(null);
-  const [rowHovered, setRowHovered] = useState(false);
-  const [atStart,    setAtStart]    = useState(true);
-  const [atEnd,      setAtEnd]      = useState(false);
+const ContentRow = ({ title, fetchHook, type = 'movie', isLarge = false, accent }) => {
+  const rowRef                              = useRef(null);
+  const [rowHovered,  setRowHovered]        = useState(false);
+  const [atStart,     setAtStart]           = useState(true);
+  const [atEnd,       setAtEnd]             = useState(false);
+  const [titleHovered, setTitleHovered]     = useState(false);
 
   const { data, isLoading, error } = fetchHook();
-
   const items = data?.results || [];
 
   /* ── scroll helpers ─────────────────────────────────────── */
@@ -27,59 +27,87 @@ const ContentRow = ({ title, fetchHook, type = 'movie', isLarge = false }) => {
   const scroll = (dir) => {
     const el = rowRef.current;
     if (!el) return;
-    const amount = el.clientWidth * 0.75;
-    el.scrollBy({ left: dir === 'right' ? amount : -amount, behavior: 'smooth' });
+    el.scrollBy({ left: dir === 'right' ? el.clientWidth * 0.78 : -(el.clientWidth * 0.78), behavior: 'smooth' });
   };
 
   if (error) return null;
   if (!isLoading && items.length === 0) return null;
 
+  const accentColor = accent || '#e50914';
+
   return (
     <div
-      style={{ padding: '8px 0 24px', position: 'relative' }}
+      style={{ padding: '4px 0 28px', position: 'relative' }}
       onMouseEnter={() => setRowHovered(true)}
       onMouseLeave={() => setRowHovered(false)}
     >
-      {/* ── ROW HEADER ─────────────────────────────────────── */}
-      <div style={{
-        display:        'flex',
-        alignItems:     'center',
-        justifyContent: 'space-between',
-        padding:        '0 4% 12px',
-      }}>
-        <h2 style={{
-          color:       '#ffffff',
-          fontSize:    '1.3rem',
-          fontWeight:  700,
-          margin:      0,
-          letterSpacing: '0.01em',
-        }}>
-          {title}
-        </h2>
-
-        {/* "See All →" — only on row hover */}
+      {/* ── ROW HEADER ────────────────────────────────────────── */}
+      <div
+        style={{
+          display:        'flex',
+          alignItems:     'center',
+          justifyContent: 'space-between',
+          padding:        '0 4% 14px',
+        }}
+      >
+        {/* Title with animated accent underline */}
         <Link
           to={`/${type === 'tv' ? 'tv' : 'movies'}`}
-          style={{
-            color:          '#E50914',
-            fontSize:       '0.82rem',
-            fontWeight:     600,
-            textDecoration: 'none',
-            letterSpacing:  '0.04em',
-            display:        'flex',
-            alignItems:     'center',
-            gap:            '4px',
-            opacity:        rowHovered ? 1 : 0,
-            transform:      rowHovered ? 'translateX(0)' : 'translateX(-6px)',
-            transition:     'opacity 0.25s ease, transform 0.25s ease',
-            pointerEvents:  rowHovered ? 'auto' : 'none',
-          }}
+          style={{ textDecoration: 'none' }}
+          onMouseEnter={() => setTitleHovered(true)}
+          onMouseLeave={() => setTitleHovered(false)}
         >
-          See All <span style={{ fontSize: '0.7rem' }}>›</span>
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <h2
+              style={{
+                color:         titleHovered ? accentColor : '#ffffff',
+                fontSize:      'clamp(1rem, 1.8vw, 1.35rem)',
+                fontWeight:    700,
+                margin:        0,
+                letterSpacing: '0.01em',
+                transition:    'color 0.25s ease',
+                display:       'flex',
+                alignItems:    'center',
+                gap:           8,
+              }}
+            >
+              {title}
+              {/* Netflix-style "Explore All" chevron that slides in on hover */}
+              <span
+                style={{
+                  display:    'flex',
+                  alignItems: 'center',
+                  gap:        3,
+                  opacity:    titleHovered ? 1 : 0,
+                  transform:  titleHovered ? 'translateX(0)' : 'translateX(-8px)',
+                  transition: 'opacity 0.25s ease, transform 0.25s ease',
+                  fontSize:   '0.75rem',
+                  fontWeight: 600,
+                  color:      accentColor,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Explore All <FaChevronRight style={{ fontSize: '0.6rem' }} />
+              </span>
+            </h2>
+            {/* Animated underline */}
+            <div
+              style={{
+                position:   'absolute',
+                bottom:     -3,
+                left:       0,
+                height:     2,
+                width:      titleHovered ? '100%' : '0%',
+                background: accentColor,
+                borderRadius: 2,
+                transition: 'width 0.3s ease',
+              }}
+            />
+          </div>
         </Link>
       </div>
 
-      {/* ── SCROLL CONTAINER WRAPPER ────────────────────────── */}
+      {/* ── SCROLL CONTAINER WRAPPER ──────────────────────────── */}
       <div style={{ position: 'relative' }}>
 
         {/* LEFT ARROW */}
@@ -87,14 +115,16 @@ const ContentRow = ({ title, fetchHook, type = 'movie', isLarge = false }) => {
           onClick={() => scroll('left')}
           aria-label="Scroll left"
           style={{
-            ...arrowStyle,
-            left:    0,
-            background: 'linear-gradient(to right, rgba(15,15,15,0.95) 40%, transparent)',
-            opacity: (rowHovered && !atStart) ? 1 : 0,
+            ...arrowBase,
+            left:       0,
+            background: 'linear-gradient(to right, rgba(10,10,10,0.97) 35%, rgba(10,10,10,0.5) 75%, transparent)',
+            opacity:    (rowHovered && !atStart) ? 1 : 0,
             pointerEvents: (rowHovered && !atStart) ? 'auto' : 'none',
           }}
         >
-          <FaChevronLeft size={20} style={{ color: '#fff', filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.8))' }} />
+          <div style={arrowIconWrap}>
+            <FaChevronLeft size={18} style={{ color: '#fff' }} />
+          </div>
         </button>
 
         {/* RIGHT ARROW */}
@@ -102,48 +132,41 @@ const ContentRow = ({ title, fetchHook, type = 'movie', isLarge = false }) => {
           onClick={() => scroll('right')}
           aria-label="Scroll right"
           style={{
-            ...arrowStyle,
-            right:   0,
-            background: 'linear-gradient(to left, rgba(15,15,15,0.95) 40%, transparent)',
-            opacity: (rowHovered && !atEnd) ? 1 : 0,
+            ...arrowBase,
+            right:      0,
+            background: 'linear-gradient(to left, rgba(10,10,10,0.97) 35%, rgba(10,10,10,0.5) 75%, transparent)',
+            opacity:    (rowHovered && !atEnd) ? 1 : 0,
             pointerEvents: (rowHovered && !atEnd) ? 'auto' : 'none',
           }}
         >
-          <FaChevronRight size={20} style={{ color: '#fff', filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.8))' }} />
+          <div style={arrowIconWrap}>
+            <FaChevronRight size={18} style={{ color: '#fff' }} />
+          </div>
         </button>
 
-        {/* ── SCROLLABLE TRACK ──────────────────────────────── */}
+        {/* ── SCROLLABLE TRACK ──────────────────────────────────── */}
         <div
           ref={rowRef}
           onScroll={updateEdges}
           style={{
             display:              'grid',
             gridAutoFlow:         'column',
-            gridAutoColumns:      'calc(100% / 6.5)',  /* ~6 visible on desktop */
-            gap:                  '8px',
+            gap:                  '6px',
             overflowX:            'auto',
             overflowY:            'visible',
-            padding:              '16px 4% 20px',      /* top/bottom padding for hover scale */
+            padding:              '20px 4% 24px',
             scrollbarWidth:       'none',
             msOverflowStyle:      'none',
-            scrollSnapType:       'x mandatory',
             WebkitOverflowScrolling: 'touch',
           }}
           className="ns-content-track"
         >
           {isLoading
-            /* ── SKELETON ────────────────────────────── */
-            ? Array.from({ length: 12 }).map((_, i) => (
-                <SkeletonCard key={i} />
-              ))
-            /* ── REAL CARDS ──────────────────────────── */
+            ? Array.from({ length: 10 }).map((_, i) => <SkeletonCard key={i} isLarge={isLarge} />)
             : items.map((item) => (
                 <div
                   key={item.id}
-                  style={{
-                    scrollSnapAlign: 'start',
-                    minWidth:        0,            /* critical for grid overflow */
-                  }}
+                  style={{ scrollSnapAlign: 'start', minWidth: 0 }}
                 >
                   <MovieCard item={item} mediaType={type} isLarge={isLarge} />
                 </div>
@@ -152,24 +175,30 @@ const ContentRow = ({ title, fetchHook, type = 'movie', isLarge = false }) => {
         </div>
       </div>
 
-      {/* ── RESPONSIVE OVERRIDES ───────────────────────────── */}
+      {/* ── RESPONSIVE OVERRIDES ────────────────────────────────── */}
       <style>{`
         .ns-content-track::-webkit-scrollbar { display: none; }
 
-        /* Desktop: 6 cards */
+        /* Desktop ≥1280 — 6 cards */
         .ns-content-track {
-          grid-auto-columns: calc((100% - 4% * 2 - 8px * 5) / 6);
+          grid-auto-columns: calc((100% - 8% - 6px * 5) / 6);
         }
-        /* Tablet: 4 cards */
-        @media (max-width: 1024px) {
+        /* Laptop 1024–1279 — 5 cards */
+        @media (max-width: 1279px) and (min-width: 1024px) {
           .ns-content-track {
-            grid-auto-columns: calc((100% - 4% * 2 - 8px * 3) / 4);
+            grid-auto-columns: calc((100% - 8% - 6px * 4) / 5);
           }
         }
-        /* Mobile: 2.5 cards (hint of next) */
-        @media (max-width: 640px) {
+        /* Tablet 640–1023 — 3.5 cards */
+        @media (max-width: 1023px) and (min-width: 640px) {
           .ns-content-track {
-            grid-auto-columns: calc((100% - 4% * 2 - 8px * 1.5) / 2.5);
+            grid-auto-columns: calc((100% - 8% - 6px * 2.5) / 3.5);
+          }
+        }
+        /* Mobile <640 — 2.3 cards */
+        @media (max-width: 639px) {
+          .ns-content-track {
+            grid-auto-columns: calc((100% - 8% - 6px * 1.3) / 2.3);
           }
         }
       `}</style>
@@ -177,45 +206,46 @@ const ContentRow = ({ title, fetchHook, type = 'movie', isLarge = false }) => {
   );
 };
 
-/* ── Skeleton card ─────────────────────────────────────────── */
-const SkeletonCard = () => (
+/* ── Skeleton card ──────────────────────────────────────────── */
+const SkeletonCard = ({ isLarge }) => (
   <div
     style={{
-      aspectRatio:  '2 / 3',
+      aspectRatio:  isLarge ? '2 / 3' : '2 / 3',
       borderRadius: '6px',
       overflow:     'hidden',
-      position:     'relative',
+      background:   'linear-gradient(90deg, #181818 0%, #242424 50%, #181818 100%)',
+      backgroundSize: '200% 100%',
+      animation:    'ns-shimmer 1.6s ease-in-out infinite',
     }}
-  >
-    <div className="ns-shimmer" style={{ width: '100%', height: '100%' }} />
-    <style>{`
-      .ns-shimmer {
-        background: linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%);
-        background-size: 200% 100%;
-        animation: ns-shimmer-anim 1.6s ease-in-out infinite;
-      }
-      @keyframes ns-shimmer-anim {
-        0%   { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-      }
-    `}</style>
-  </div>
+  />
 );
 
-/* ── Arrow button base styles ──────────────────────────────── */
-const arrowStyle = {
-  position:        'absolute',
-  top:             0,
-  bottom:          0,
-  zIndex:          10,
-  width:           '72px',
-  border:          'none',
-  cursor:          'pointer',
-  display:         'flex',
-  alignItems:      'center',
-  justifyContent:  'center',
-  transition:      'opacity 0.25s ease',
-  padding:         0,
+/* ── Arrow base styles ──────────────────────────────────────── */
+const arrowBase = {
+  position:       'absolute',
+  top:            0,
+  bottom:         0,
+  zIndex:         10,
+  width:          '80px',
+  border:         'none',
+  cursor:         'pointer',
+  display:        'flex',
+  alignItems:     'center',
+  justifyContent: 'center',
+  transition:     'opacity 0.25s ease',
+  padding:        0,
+};
+
+const arrowIconWrap = {
+  width:          36,
+  height:         36,
+  borderRadius:   '50%',
+  background:     'rgba(30,30,30,0.8)',
+  border:         '1.5px solid rgba(255,255,255,0.2)',
+  display:        'flex',
+  alignItems:     'center',
+  justifyContent: 'center',
+  backdropFilter: 'blur(4px)',
 };
 
 export default ContentRow;

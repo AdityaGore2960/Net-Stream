@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from 'react';
+import React, { Suspense, lazy, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './store/authStore';
@@ -17,19 +17,29 @@ const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
 
 const App = () => {
-  const { checkAuth } = useAuthStore();
-  const { setGenres } = useMovieStore();
+  // Use the store's getState() so we get stable function references
+  // that never change between renders — avoids the infinite-loop
+  // that happens when Zustand actions are used as useEffect deps.
+  const didInit = useRef(false);
 
   useEffect(() => {
-    // Check authentication status on load
+    // Guard: run only once on mount, never again
+    if (didInit.current) return;
+    didInit.current = true;
+
+    // Stable references via getState() — not affected by re-renders
+    const checkAuth = useAuthStore.getState().checkAuth;
+    const setGenres = useMovieStore.getState().setGenres;
+
+    // Check authentication status once on app load
     checkAuth();
 
-    // Load genres globally
+    // Load genres globally once on app load
     const loadGenres = async () => {
       try {
         const [moviesRes, tvRes] = await Promise.all([
           getMovieGenres(),
-          getTVGenres()
+          getTVGenres(),
         ]);
         setGenres('movies', moviesRes.genres);
         setGenres('tv', tvRes.genres);
@@ -39,7 +49,7 @@ const App = () => {
     };
 
     loadGenres();
-  }, [checkAuth, setGenres]);
+  }, []); // ← empty array: intentionally runs once on mount only
 
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>

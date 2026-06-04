@@ -63,15 +63,19 @@ const globalLimiter = rateLimit({
 app.use('/api/', globalLimiter);
 
 // Strict auth limiter — 20 attempts per 15 min to prevent brute force
+// Disabled entirely in development so hot-reloads never cause 429s.
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many login attempts, please try again after 15 minutes.' },
+  skip: () => process.env.NODE_ENV === 'development', // disable in dev
 });
-app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/login',    authLimiter);
 app.use('/api/auth/register', authLimiter);
+// /api/auth/me is called on every app load — protect it in prod too
+app.use('/api/auth/me',       authLimiter);
 
 // ==========================================
 // DATABASE CONNECTION

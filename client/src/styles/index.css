@@ -2,54 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens ───────────────────────────────────────────── */
 :root {
-  --ns-black: #0a0a0a;
-  --ns-dark: #141414;
-  --ns-dark-2: #181818;
-  --ns-dark-3: #222222;
-  --ns-red: #e50914;
-  --ns-red-hover: #f40612;
-  --ns-white: #ffffff;
-  --ns-gray-1: #999999;
-  --ns-gray-2: #666666;
-  --ns-gray-3: #333333;
+  --ns-black:      #0a0a0a;
+  --ns-dark:       #141414;
+  --ns-dark-2:     #181818;
+  --ns-dark-3:     #222222;
+  --ns-red:        #e50914;
+  --ns-red-hover:  #f40612;
+  --ns-white:      #ffffff;
+  --ns-gray-1:     #999999;
+  --ns-gray-2:     #666666;
+  --ns-gray-3:     #333333;
+
+  /* Ease curves */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-netflix:   cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+
+/* ── Base ────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 body {
-  background-color: var(--ns-black);
-  color: var(--ns-white);
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
+  background-color:  var(--ns-black);
+  color:             var(--ns-white);
+  font-family:       'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x:        hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-* {
-  box-sizing: border-box;
+/* ── Custom scrollbar ────────────────────────────────────────── */
+::-webkit-scrollbar             { width: 7px; height: 7px; }
+::-webkit-scrollbar-track       { background: var(--ns-black); }
+::-webkit-scrollbar-thumb       { background: #2a2a2a; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+
+/* ── Utility: hide scrollbar ─────────────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Shimmer skeleton animation ──────────────────────────────── */
+@keyframes ns-shimmer {
+  0%   { background-position:  200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.ns-shimmer {
+  background: linear-gradient(90deg, #181818 0%, #252525 50%, #181818 100%);
+  background-size: 200% 100%;
+  animation: ns-shimmer 1.6s ease-in-out infinite;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--ns-black);
+/* ── Hero content slide-up on load ───────────────────────────── */
+@keyframes heroSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--ns-gray-3);
-  border-radius: 4px;
+/* ── Fade-in ─────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--ns-gray-2);
+.ns-fade-in { animation: fadeIn 0.35s ease forwards; }
+
+/* ── Focus ring ─────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--ns-red);
+  outline-offset: 2px;
+  border-radius: 3px;
 }
 
-/* Hide scrollbar for content rows but allow scrolling */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+/* ── Prevent content from hiding under fixed navbar ─────────── */
+main { padding-top: 0; }
