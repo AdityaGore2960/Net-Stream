@@ -27,20 +27,41 @@ const MONGODB_URI = process.env.MONGODB_URI;
 // MIDDLEWARE
 // ==========================================
 
-// Security headers
-app.use(helmet());
+// CORS configuration — MUST come before helmet so preflight (OPTIONS)
+// responses include the correct Access-Control-* headers.
+const allowedOrigins = [
+  process.env.CLIENT_URL,        // Set in .env (prod: Vercel URL, dev: localhost)
+  'https://net-stream-ten.vercel.app', // Vercel production frontend
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175'
+].filter(Boolean);
 
-// CORS configuration
-app.use(cors({
-  origin: [
-    process.env.CLIENT_URL,
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175'
-  ].filter(Boolean),
+// Use an origin callback so the exact request Origin is reflected back —
+// required for credentials:true (browsers reject wildcard '*' with cookies).
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow server-to-server / curl requests (no origin header)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS: origin ${origin} not allowed`));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+
+// Explicitly handle preflight OPTIONS for every route
+// '{*path}' is the correct Express 5 catch-all wildcard syntax
+app.options('{*path}', cors(corsOptions));
+
+// Security headers — placed after CORS so it doesn't interfere with preflight
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
 }));
 
 // Request parsing

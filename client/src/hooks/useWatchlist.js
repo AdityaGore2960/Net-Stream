@@ -13,19 +13,18 @@ export const useWatchlist = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { token, isAuthenticated } = useAuthStore();
 
-  // Axios config with auth token
-  const config = {
-    headers: { Authorization: `Bearer ${token}` }
-  };
-
   /**
    * Fetch user's watchlist
+   * config is built inside useCallback so it doesn't cause a new function
+   * reference on every render (which would re-trigger the useEffect).
    */
   const fetchWatchlist = useCallback(async () => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || !token) return;
     setIsLoading(true);
     try {
-      const { data } = await axios.get(`${API_URL}/watchlist`, config);
+      const { data } = await axios.get(`${API_URL}/watchlist`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       if (data.success) {
         setWatchlist(data.data);
       }
@@ -35,7 +34,7 @@ export const useWatchlist = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated, token]);
+  }, [isAuthenticated, token]); // ← only re-creates when auth state genuinely changes
 
   useEffect(() => {
     fetchWatchlist();
@@ -67,7 +66,9 @@ export const useWatchlist = () => {
     setWatchlist(prev => [watchlistItem, ...prev]);
 
     try {
-      await axios.post(`${API_URL}/watchlist`, watchlistItem, config);
+      await axios.post(`${API_URL}/watchlist`, watchlistItem, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success(`${watchlistItem.title} added to My List`);
       return true;
     } catch (error) {
@@ -97,7 +98,9 @@ export const useWatchlist = () => {
     setWatchlist(prev => prev.filter(item => item.tmdbId !== tmdbId));
 
     try {
-      await axios.delete(`${API_URL}/watchlist/${tmdbId}?mediaType=${mediaType}`, config);
+      await axios.delete(`${API_URL}/watchlist/${tmdbId}?mediaType=${mediaType}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success('Removed from My List');
       return true;
     } catch (error) {
