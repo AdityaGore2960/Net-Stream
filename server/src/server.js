@@ -30,8 +30,9 @@ const MONGODB_URI = process.env.MONGODB_URI;
 // CORS configuration — MUST come before helmet so preflight (OPTIONS)
 // responses include the correct Access-Control-* headers.
 const allowedOrigins = [
-  process.env.CLIENT_URL,        // Set in .env (prod: Vercel URL, dev: localhost)
-  'https://net-stream-ten.vercel.app', // Vercel production frontend
+  process.env.CLIENT_URL,
+  'https://net-stream-ten.vercel.app',
+  'https://net-stream-navy.vercel.app',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175'
