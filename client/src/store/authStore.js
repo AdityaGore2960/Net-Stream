@@ -103,13 +103,9 @@ export const useAuthStore = create((set) => ({
   register: async (userData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, userData);
-      const { user, token } = response.data;
-
-      // Save to localStorage
-      localStorage.setItem('token', token);
-
-      set({ user, token, isAuthenticated: true, isLoading: false });
+      await axios.post(`${API_URL}/auth/register`, userData);
+      // Do not auto-login after registration, just clear loading state
+      set({ isLoading: false });
       return { success: true };
     } catch (error) {
       const message = error.response?.data?.message || 'Registration failed';

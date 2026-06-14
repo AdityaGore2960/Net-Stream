@@ -10,20 +10,20 @@ import ReactPlayer from 'react-player/youtube';
 import { FaTimes, FaArrowLeft, FaExpand } from 'react-icons/fa';
 
 const MovieDetailPage = () => {
-  const { id }       = useParams();
-  const location     = useLocation();
-  const navigate     = useNavigate();
-  const mediaType    = location.pathname.includes('/tv/') ? 'tv' : 'movie';
+  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const mediaType = location.pathname.includes('/tv/') ? 'tv' : 'movie';
 
   const { data, isLoading, error } = useGetDetails(mediaType, id);
-  const { trailerKey }             = useTrailer(mediaType, id);
+  const { trailerKey } = useTrailer(mediaType, id);
   const {
     isTrailerOpen, closeTrailer,
-    isPlayerOpen,  closePlayer,
+    isPlayerOpen, closePlayer,
   } = useUIStore();
 
-  const modalRef      = useRef(null);
-  const isModalOpen   = isPlayerOpen || isTrailerOpen;
+  const modalRef = useRef(null);
+  const isModalOpen = isPlayerOpen || isTrailerOpen;
 
   /* ── Close on page navigation ────────────────────────────── */
   useEffect(() => {
@@ -39,7 +39,7 @@ const MovieDetailPage = () => {
   ─────────────────────────────────────────────────────────── */
   const handleEscape = useCallback((e) => {
     if (e.key !== 'Escape') return;
-    if (isPlayerOpen  && closePlayer)  closePlayer();
+    if (isPlayerOpen && closePlayer) closePlayer();
     if (isTrailerOpen && closeTrailer) closeTrailer();
   }, [isPlayerOpen, isTrailerOpen, closePlayer, closeTrailer]);
 
@@ -53,10 +53,10 @@ const MovieDetailPage = () => {
   useEffect(() => {
     if (!isModalOpen) return;
     window.addEventListener('keydown', handleEscape);
-    window.addEventListener('blur',    reclaim);
+    window.addEventListener('blur', reclaim);
     return () => {
       window.removeEventListener('keydown', handleEscape);
-      window.removeEventListener('blur',    reclaim);
+      window.removeEventListener('blur', reclaim);
     };
   }, [isModalOpen, handleEscape, reclaim]);
 
@@ -67,11 +67,10 @@ const MovieDetailPage = () => {
 
   /* ── Embed URL ───────────────────────────────────────────── */
   const getEmbedUrl = () => {
-    const base   = 'https://vidfast.pro';
-    const params = 'autoPlay=true&theme=e50914&title=true&poster=true&hideServer=true';
+    // Using vidsrc.me as a highly reliable streaming fallback
     return mediaType === 'tv'
-      ? `${base}/tv/${id}/1/1?${params}&nextButton=true&autoNext=true`
-      : `${base}/movie/${id}?${params}`;
+      ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=1&episode=1`
+      : `https://vidsrc.me/embed/movie?tmdb=${id}`;
   };
 
   /* ── Loading / error ─────────────────────────────────────── */
@@ -98,11 +97,11 @@ const MovieDetailPage = () => {
     );
   }
 
-  const fetchSimilar         = () => ({ data: data.similar,         isLoading: false, error: null });
+  const fetchSimilar = () => ({ data: data.similar, isLoading: false, error: null });
   const fetchRecommendations = () => ({ data: data.recommendations, isLoading: false, error: null });
 
   const title = data?.title || data?.name || '';
-  const year  = (data?.release_date || data?.first_air_date)?.slice(0, 4);
+  const year = (data?.release_date || data?.first_air_date)?.slice(0, 4);
 
   return (
     <Layout>
@@ -110,7 +109,7 @@ const MovieDetailPage = () => {
 
       <div className="pb-12 space-y-8 mt-4 relative z-10">
         {data.similar?.results?.length > 0 && (
-          <ContentRow title="More Like This"  fetchHook={fetchSimilar}         type={mediaType} />
+          <ContentRow title="More Like This" fetchHook={fetchSimilar} type={mediaType} />
         )}
         {data.recommendations?.results?.length > 0 && (
           <ContentRow title="Recommendations" fetchHook={fetchRecommendations} type={mediaType} />
@@ -250,127 +249,127 @@ const MovieDetailPage = () => {
 
 /* Full-screen overlay — covers navbar completely */
 const overlay = {
-  position:      'fixed',
-  inset:         0,
-  zIndex:        1100,          /* > Navbar 999 */
-  background:    'rgba(0,0,0,0.96)',
-  display:       'flex',
+  position: 'fixed',
+  inset: 0,
+  zIndex: 1100,          /* > Navbar 999 */
+  background: 'rgba(0,0,0,0.96)',
+  display: 'flex',
   flexDirection: 'column',
-  alignItems:    'center',
-  justifyContent:'center',
-  outline:       'none',
+  alignItems: 'center',
+  justifyContent: 'center',
+  outline: 'none',
 };
 
 /* ── Floating close (✕) button — top-right, trailer modal ── */
 const floatingCloseBase = {
-  background:  'rgba(20,20,20,0.85)',
+  background: 'rgba(20,20,20,0.85)',
   borderColor: 'rgba(255,255,255,0.3)',
 };
 const floatingCloseHover = {
-  background:  '#e50914',
+  background: '#e50914',
   borderColor: '#e50914',
 };
 const floatingClose = {
-  position:       'fixed',
-  top:            24,
-  right:          28,
-  zIndex:         1200,
-  display:        'flex',
-  alignItems:     'center',
+  position: 'fixed',
+  top: 24,
+  right: 28,
+  zIndex: 1200,
+  display: 'flex',
+  alignItems: 'center',
   justifyContent: 'center',
-  width:          46,
-  height:         46,
-  borderRadius:   '50%',
-  background:     'rgba(20,20,20,0.85)',
-  border:         '1.5px solid rgba(255,255,255,0.3)',
-  color:          '#fff',
-  cursor:         'pointer',
-  transition:     'background 0.2s ease, border-color 0.2s ease, transform 0.15s ease',
+  width: 46,
+  height: 46,
+  borderRadius: '50%',
+  background: 'rgba(20,20,20,0.85)',
+  border: '1.5px solid rgba(255,255,255,0.3)',
+  color: '#fff',
+  cursor: 'pointer',
+  transition: 'background 0.2s ease, border-color 0.2s ease, transform 0.15s ease',
   backdropFilter: 'blur(8px)',
 };
 
 /* ── Floating back button — top-left, trailer modal ── */
 const floatingBack = {
-  position:    'fixed',
-  top:         24,
-  left:        24,
-  zIndex:      1200,
-  display:     'flex',
-  alignItems:  'center',
-  gap:         6,
-  background:  'none',
-  border:      'none',
-  color:       'rgba(255,255,255,0.7)',
-  fontSize:    '0.9rem',
-  fontWeight:  600,
-  cursor:      'pointer',
-  transition:  'color 0.2s ease',
+  position: 'fixed',
+  top: 24,
+  left: 24,
+  zIndex: 1200,
+  display: 'flex',
+  alignItems: 'center',
+  gap: 6,
+  background: 'none',
+  border: 'none',
+  color: 'rgba(255,255,255,0.7)',
+  fontSize: '0.9rem',
+  fontWeight: 600,
+  cursor: 'pointer',
+  transition: 'color 0.2s ease',
 };
 
 /* ── Top bar — player modal (sits ABOVE the iframe) ── */
 const topBar = {
-  width:          '100%',
-  display:        'flex',
-  alignItems:     'center',
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
   justifyContent: 'space-between',
-  padding:        '14px 24px',
-  flexShrink:     0,
-  background:     'linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%)',
-  position:       'relative',
-  zIndex:         1200,
+  padding: '14px 24px',
+  flexShrink: 0,
+  background: 'linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%)',
+  position: 'relative',
+  zIndex: 1200,
 };
 
 const backBtn = {
-  display:    'flex',
+  display: 'flex',
   alignItems: 'center',
-  gap:        8,
+  gap: 8,
   background: 'none',
-  border:     'none',
-  color:      'rgba(255,255,255,0.7)',
-  fontSize:   '0.9rem',
+  border: 'none',
+  color: 'rgba(255,255,255,0.7)',
+  fontSize: '0.9rem',
   fontWeight: 600,
-  cursor:     'pointer',
+  cursor: 'pointer',
   transition: 'color 0.2s ease',
   flexShrink: 0,
 };
 
 /* Circular ✕ button — top-right, player modal */
 const closeXBtn = {
-  display:        'flex',
-  alignItems:     'center',
+  display: 'flex',
+  alignItems: 'center',
   justifyContent: 'center',
-  width:          46,
-  height:         46,
-  borderRadius:   '50%',
-  background:     'rgba(20,20,20,0.85)',
-  border:         '1.5px solid rgba(255,255,255,0.3)',
-  color:          '#fff',
-  cursor:         'pointer',
-  transition:     'background 0.2s ease, border-color 0.2s ease',
+  width: 46,
+  height: 46,
+  borderRadius: '50%',
+  background: 'rgba(20,20,20,0.85)',
+  border: '1.5px solid rgba(255,255,255,0.3)',
+  color: '#fff',
+  cursor: 'pointer',
+  transition: 'background 0.2s ease, border-color 0.2s ease',
   backdropFilter: 'blur(8px)',
-  flexShrink:     0,
+  flexShrink: 0,
 };
 
 /* iframe container */
 const iframeWrap = {
-  width:       '100%',
-  flex:        1,
-  padding:     '0 0 8px',
-  minHeight:   0,
+  width: '100%',
+  flex: 1,
+  padding: '0 0 8px',
+  minHeight: 0,
 };
 
 const iframeStyle = {
-  width:       '100%',
-  height:      '100%',
-  border:      'none',
-  display:     'block',
+  width: '100%',
+  height: '100%',
+  border: 'none',
+  display: 'block',
 };
 
 const playerWrap = {
-  width:       '100%',
-  maxWidth:    '72rem',
+  width: '100%',
+  maxWidth: '72rem',
   aspectRatio: '16/9',
-  padding:     '0 16px',
+  padding: '0 16px',
 };
 
 const noMedia = {
@@ -380,17 +379,17 @@ const noMedia = {
 };
 
 const escHint = {
-  color:     'rgba(255,255,255,0.25)',
-  fontSize:  '0.72rem',
+  color: 'rgba(255,255,255,0.25)',
+  fontSize: '0.72rem',
   marginTop: 10,
   flexShrink: 0,
 };
 
 const kbd = {
-  background:   'rgba(255,255,255,0.1)',
-  padding:      '1px 7px',
+  background: 'rgba(255,255,255,0.1)',
+  padding: '1px 7px',
   borderRadius: 4,
-  fontFamily:   'monospace',
+  fontFamily: 'monospace',
 };
 
 export default MovieDetailPage;

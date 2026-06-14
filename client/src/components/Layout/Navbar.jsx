@@ -6,6 +6,8 @@ import {
 } from 'react-icons/fa';
 import { useAuthStore } from '../../store/authStore';
 import { useUIStore } from '../../store/uiStore';
+import { useSearch } from '../../hooks/useSearch';
+import { getImageURL } from '../../services/tmdb';
 
 const GENRES = [
   { label: 'Action',    path: '/movies' },
@@ -49,6 +51,9 @@ const Navbar = () => {
   const { toggleSearch }  = useUIStore();
   const location          = useLocation();
   const navigate          = useNavigate();
+
+  // Add the useSearch hook for live results
+  const { results, isLoading, hasResults } = useSearch(searchValue, 500);
 
   /* scroll detection */
   useEffect(() => {
@@ -258,7 +263,7 @@ const Navbar = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
 
             {/* Expanding search */}
-            <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center' }}>
+            <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 8,
                 background: searchOpen ? 'rgba(0,0,0,0.6)' : 'transparent',
@@ -284,6 +289,71 @@ const Navbar = () => {
                   }}
                 />
               </div>
+
+              {/* Live Search Dropdown */}
+              {searchOpen && searchValue.trim().length > 1 && (
+                <div style={{
+                  position: 'absolute', top: '100%', right: 0, marginTop: 8,
+                  width: 280, maxHeight: 400, overflowY: 'auto',
+                  background: 'rgba(20,20,20,0.97)', border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 6, boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
+                  backdropFilter: 'blur(16px)', zIndex: 100, padding: '8px 0'
+                }}>
+                  {isLoading ? (
+                    <div style={{ padding: '16px', textAlign: 'center', color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>Searching...</div>
+                  ) : results.filter(item => item.media_type === 'movie' || item.media_type === 'tv').length > 0 ? (
+                    <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                      {results.filter(item => item.media_type === 'movie' || item.media_type === 'tv').slice(0, 5).map(item => {
+                        const title = item.title || item.name;
+                        const imagePath = item.poster_path || item.backdrop_path;
+                        const mediaType = item.media_type === 'tv' ? 'tv' : 'movie';
+                        return (
+                          <li key={`${item.media_type}-${item.id}`}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSearchOpen(false);
+                                setSearchValue('');
+                                if (item.media_type === 'person') {
+                                  navigate(`/search?q=${encodeURIComponent(item.name)}`);
+                                } else {
+                                  navigate(`/${mediaType}/${item.id}`);
+                                }
+                              }}
+                              style={{
+                                display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+                                padding: '8px 16px', background: 'transparent', border: 'none',
+                                textAlign: 'left', cursor: 'pointer', transition: 'background 0.2s',
+                              }}
+                              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                            >
+                              <div style={{ width: 36, height: 54, flexShrink: 0, background: '#333', borderRadius: 4, overflow: 'hidden' }}>
+                                {imagePath ? (
+                                  <img src={getImageURL(imagePath, 'w200')} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                ) : null}
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <p style={{ color: '#fff', fontSize: '0.85rem', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{title}</p>
+                                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', margin: '2px 0 0', textTransform: 'capitalize' }}>{item.media_type}</p>
+                              </div>
+                            </button>
+                          </li>
+                        )
+                      })}
+                      <li>
+                        <button type="button" onClick={handleSearchSubmit} style={{ display: 'block', width: '100%', padding: '12px', textAlign: 'center', color: '#fff', fontSize: '0.85rem', background: 'rgba(255,255,255,0.05)', border: 'none', cursor: 'pointer', marginTop: '4px' }}>
+                          See all results for "{searchValue}"
+                        </button>
+                      </li>
+                    </ul>
+                  ) : (
+                    <div style={{ padding: '24px 16px', textAlign: 'center', color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
+                      No results found for "{searchValue}"
+                    </div>
+                  )}
+                </div>
+              )}
             </form>
 
             {/* Notifications */}
