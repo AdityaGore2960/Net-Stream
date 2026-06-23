@@ -13,40 +13,40 @@ const MovieCardHover = ({ item, mediaType, parentRef, isLarge, onMouseLeave }) =
   const [position, setPosition] = useState({ top: 0, left: 0, width: 0 });
   const [isRendered, setIsRendered] = useState(false);
   const navigate = useNavigate();
-  
+
   const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
   const { genres } = useMovieStore();
   const { openTrailer } = useUIStore();
-  
+
   const inList = isInWatchlist(item.id);
-  
+
   // Calculate position based on parent element
   useEffect(() => {
     if (parentRef.current) {
       const rect = parentRef.current.getBoundingClientRect();
       const scrollY = window.scrollY || window.pageYOffset;
-      
+
       // Calculate expansion width (approx 1.5x)
       const hoverWidth = rect.width * 1.5;
-      
+
       // Calculate left position (prevent overflowing viewport edges)
       let left = rect.left - (hoverWidth - rect.width) / 2;
-      
+
       // Adjust if too close to left edge
       if (left < 20) left = 20;
-      
+
       // Adjust if too close to right edge
       const windowWidth = window.innerWidth;
       if (left + hoverWidth > windowWidth - 20) {
         left = windowWidth - hoverWidth - 20;
       }
-      
+
       setPosition({
         top: rect.top + scrollY - (isLarge ? 20 : 60), // pop up slightly
         left: left,
         width: hoverWidth,
       });
-      
+
       // Trigger animation after brief delay
       setTimeout(() => setIsRendered(true), 50);
     }
@@ -95,7 +95,7 @@ const MovieCardHover = ({ item, mediaType, parentRef, isLarge, onMouseLeave }) =
       {/* Video/Image Header */}
       <div className="relative aspect-video w-full bg-ns-dark">
         <img
-          src={getImageURL(item.backdrop_path || item.poster_path, 'w300')}
+          src={getImageURL(item.backdrop_path || item.poster_path, 'w500')}
           alt={item.title || item.name}
           className="w-full h-full object-cover"
         />
@@ -110,14 +110,14 @@ const MovieCardHover = ({ item, mediaType, parentRef, isLarge, onMouseLeave }) =
         {/* Actions Row */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <button 
+            <button
               onClick={handlePlay}
               className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-white/80 transition-colors"
               aria-label="Play"
             >
               <FaPlay className="ml-1 text-sm md:text-base" />
             </button>
-            <button 
+            <button
               onClick={handleWatchlistToggle}
               className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-ns-dark-3 border-2 border-ns-gray-2 flex items-center justify-center hover:border-white transition-colors group"
               aria-label="Add to My List"
@@ -128,14 +128,14 @@ const MovieCardHover = ({ item, mediaType, parentRef, isLarge, onMouseLeave }) =
                 <FaPlus className="text-white group-hover:text-white" />
               )}
             </button>
-            <button 
+            <button
               className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-ns-dark-3 border-2 border-ns-gray-2 flex items-center justify-center hover:border-white transition-colors"
               aria-label="Like"
             >
               <FaThumbsUp className="text-white" />
             </button>
           </div>
-          <button 
+          <button
             onClick={handleNavigate}
             className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-ns-dark-3 border-2 border-ns-gray-2 flex items-center justify-center hover:border-white transition-colors"
             aria-label="More Info"

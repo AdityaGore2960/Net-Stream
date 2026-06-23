@@ -58,7 +58,7 @@ const MovieDetail = ({ item, mediaType }) => {
       <div className="relative w-full h-auto min-h-[70vh] bg-ns-black flex flex-col justify-end">
         <div className="absolute inset-0 z-0">
           <img
-            src={getImageURL(item.backdrop_path, 'w780')}
+            src={getImageURL(item.backdrop_path, 'w1280')}
             alt={title}
             className="w-full h-full object-cover opacity-30"
           />
@@ -70,7 +70,7 @@ const MovieDetail = ({ item, mediaType }) => {
           {/* Poster - hidden on small mobile, visible on md+ */}
           <div className="hidden md:block w-48 lg:w-64 flex-shrink-0">
             <img
-              src={getImageURL(item.poster_path, 'w300')}
+              src={getImageURL(item.poster_path, 'w500')}
               alt={title}
               className="w-full rounded-lg shadow-2xl border border-white/10"
             />
@@ -104,7 +104,7 @@ const MovieDetail = ({ item, mediaType }) => {
             </p>
 
             <div className="flex flex-wrap items-center gap-4 mb-8">
-              <button 
+              <button
                 onClick={openPlayer}
                 className="flex items-center gap-2 bg-ns-red text-white px-6 py-3 rounded hover:bg-ns-red-hover transition-colors font-bold text-lg shadow-lg shadow-ns-red/20"
               >
@@ -112,7 +112,7 @@ const MovieDetail = ({ item, mediaType }) => {
               </button>
 
               {!hasProviders && (
-                <button 
+                <button
                   onClick={() => openTrailer(null)}
                   className="flex items-center gap-2 bg-white text-black px-6 py-3 rounded hover:bg-white/80 transition-colors font-bold text-lg"
                 >

@@ -18,8 +18,8 @@ function fakeMatch(id) {
  * Netflix-style Movie Card — premium inline hover overlay
  */
 const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
-  const [hovered,     setHovered]     = useState(false);
-  const [imgLoaded,   setImgLoaded]   = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
   const navigate = useNavigate();
   const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
   const { openDetail } = useUIStore();
@@ -27,20 +27,20 @@ const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
   if (!item) return null;
 
   const inList = isInWatchlist(item.id);
-  const title  = item.title || item.name;
-  const year   = (item.release_date || item.first_air_date)?.slice(0, 4);
+  const title = item.title || item.name;
+  const year = (item.release_date || item.first_air_date)?.slice(0, 4);
   const rating = formatRating(item.vote_average);
-  const match  = fakeMatch(item.id);
+  const match = fakeMatch(item.id);
   const matchColor = MATCH_COLORS[item.id % MATCH_COLORS.length];
 
   const imgPath = item.poster_path || item.backdrop_path;
-  const imgUrl  = getImageURL(imgPath, 'w300');
+  const imgUrl = getImageURL(imgPath, 'w500');
 
-  const handleClick     = () => openDetail(item, mediaType);
+  const handleClick = () => openDetail(item, mediaType);
   const handleWatchlist = (e) => {
     e.stopPropagation();
     if (inList) removeFromWatchlist(item.id, mediaType);
-    else        addToWatchlist(item, mediaType);
+    else addToWatchlist(item, mediaType);
   };
   const handlePlay = (e) => {
     e.stopPropagation();
@@ -57,25 +57,25 @@ const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
       onMouseLeave={() => setHovered(false)}
       onClick={handleClick}
       style={{
-        position:     'relative',
+        position: 'relative',
         borderRadius: '4px',
-        overflow:     'visible',
-        cursor:       'pointer',
-        aspectRatio:  '2 / 3',
-        width:        '100%',
+        overflow: 'visible',
+        cursor: 'pointer',
+        aspectRatio: '2 / 3',
+        width: '100%',
       }}
     >
       {/* ── Card inner (scales on hover) ──────────────── */}
       <div
         style={{
-          position:   'absolute',
-          inset:      0,
+          position: 'absolute',
+          inset: 0,
           borderRadius: '4px',
-          overflow:   'hidden',
+          overflow: 'hidden',
           background: '#1a1a1a',
-          transform:  hovered ? 'scale(1.07)' : 'scale(1)',
-          zIndex:     hovered ? 20 : 1,
-          boxShadow:  hovered
+          transform: hovered ? 'scale(1.07)' : 'scale(1)',
+          zIndex: hovered ? 20 : 1,
+          boxShadow: hovered
             ? '0 14px 50px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.07)'
             : '0 4px 16px rgba(0,0,0,0.5)',
           transition: 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.32s cubic-bezier(0.25,0.46,0.45,0.94)',
@@ -89,11 +89,11 @@ const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
             loading="lazy"
             onLoad={() => setImgLoaded(true)}
             style={{
-              width:      '100%',
-              height:     '100%',
-              objectFit:  'cover',
-              display:    'block',
-              opacity:    imgLoaded ? 1 : 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              opacity: imgLoaded ? 1 : 0,
               transition: 'opacity 0.4s ease',
             }}
           />
@@ -120,39 +120,39 @@ const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
         {/* ── Hover overlay ─────────────────────────────── */}
         <div
           style={{
-            position:       'absolute',
-            inset:          0,
-            background:     'linear-gradient(to top, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.1) 100%)',
-            opacity:        hovered ? 1 : 0,
-            transition:     'opacity 0.3s ease',
-            display:        'flex',
-            flexDirection:  'column',
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.1) 100%)',
+            opacity: hovered ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+            display: 'flex',
+            flexDirection: 'column',
             justifyContent: 'flex-end',
-            padding:        '10px 10px 11px',
+            padding: '10px 10px 11px',
           }}
         >
           {/* Center play icon */}
           <div
             style={{
-              position:        'absolute',
-              top:             '42%',
-              left:            '50%',
-              transform:       hovered ? 'translate(-50%, -50%) scale(1)' : 'translate(-50%, -50%) scale(0.5)',
-              opacity:         hovered ? 1 : 0,
-              transition:      'transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94) 0.04s, opacity 0.3s ease 0.04s',
+              position: 'absolute',
+              top: '42%',
+              left: '50%',
+              transform: hovered ? 'translate(-50%, -50%) scale(1)' : 'translate(-50%, -50%) scale(0.5)',
+              opacity: hovered ? 1 : 0,
+              transition: 'transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94) 0.04s, opacity 0.3s ease 0.04s',
             }}
           >
             <div
               onClick={handlePlay}
               style={{
-                width:          46,
-                height:         46,
-                borderRadius:   '50%',
-                background:     '#ffffff',
-                display:        'flex',
-                alignItems:     'center',
+                width: 46,
+                height: 46,
+                borderRadius: '50%',
+                background: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow:      '0 4px 20px rgba(0,0,0,0.6)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.6)',
               }}
             >
               <FaPlay style={{ color: '#000', fontSize: '0.95rem', marginLeft: '3px' }} />
@@ -162,17 +162,17 @@ const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
           {/* Bottom info */}
           <div
             style={{
-              transform:  hovered ? 'translateY(0)' : 'translateY(8px)',
-              opacity:    hovered ? 1 : 0,
+              transform: hovered ? 'translateY(0)' : 'translateY(8px)',
+              opacity: hovered ? 1 : 0,
               transition: 'transform 0.3s ease 0.06s, opacity 0.3s ease 0.06s',
             }}
           >
             {/* Match % */}
             <div
               style={{
-                fontSize:    '0.72rem',
-                fontWeight:  700,
-                color:       matchColor,
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: matchColor,
                 marginBottom: 3,
               }}
             >
@@ -182,13 +182,13 @@ const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
             {/* Title */}
             <p
               style={{
-                color:           '#fff',
-                fontWeight:      700,
-                fontSize:        '0.82rem',
-                lineHeight:      1.25,
-                margin:          '0 0 5px',
-                overflow:        'hidden',
-                display:         '-webkit-box',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                lineHeight: 1.25,
+                margin: '0 0 5px',
+                overflow: 'hidden',
+                display: '-webkit-box',
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: 'vertical',
               }}
@@ -199,12 +199,12 @@ const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
             {/* Meta row */}
             <div
               style={{
-                display:      'flex',
-                alignItems:   'center',
-                gap:          6,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
                 marginBottom: 8,
-                fontSize:     '0.68rem',
-                color:        'rgba(255,255,255,0.65)',
+                fontSize: '0.68rem',
+                color: 'rgba(255,255,255,0.65)',
               }}
             >
               <span style={{ color: '#fbbf24', fontWeight: 700 }}>★ {rating}</span>
@@ -215,8 +215,8 @@ const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <button onClick={handleWatchlist} title={inList ? 'Remove from My List' : 'Add to My List'} style={iconBtn}>
                 {inList
-                  ? <FaCheck     style={{ color: '#4ade80', fontSize: '0.62rem' }} />
-                  : <FaPlus      style={{ color: '#fff',    fontSize: '0.62rem' }} />
+                  ? <FaCheck style={{ color: '#4ade80', fontSize: '0.62rem' }} />
+                  : <FaPlus style={{ color: '#fff', fontSize: '0.62rem' }} />
                 }
               </button>
               <button onClick={(e) => e.stopPropagation()} title="Like" style={iconBtn}>
@@ -239,18 +239,18 @@ const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
 };
 
 const iconBtn = {
-  width:          28,
-  height:         28,
-  borderRadius:   '50%',
-  background:     'rgba(20,20,20,0.6)',
-  border:         '1.5px solid rgba(255,255,255,0.45)',
-  display:        'flex',
-  alignItems:     'center',
+  width: 28,
+  height: 28,
+  borderRadius: '50%',
+  background: 'rgba(20,20,20,0.6)',
+  border: '1.5px solid rgba(255,255,255,0.45)',
+  display: 'flex',
+  alignItems: 'center',
   justifyContent: 'center',
-  cursor:         'pointer',
-  transition:     'border-color 0.18s ease, background 0.18s ease',
-  padding:        0,
-  flexShrink:     0,
+  cursor: 'pointer',
+  transition: 'border-color 0.18s ease, background 0.18s ease',
+  padding: 0,
+  flexShrink: 0,
 };
 
 export default MovieCard;

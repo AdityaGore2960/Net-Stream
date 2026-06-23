@@ -15,17 +15,17 @@ import MovieCard from '../Cards/MovieCard';
  */
 const DetailModal = () => {
   const { isDetailOpen, selectedItem, selectedType, closeDetail } = useUIStore();
-  const [mounted, setMounted]   = useState(false);
-  const [visible, setVisible]   = useState(false);
-  const overlayRef              = useRef(null);
-  const navigate                = useNavigate();
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const overlayRef = useRef(null);
+  const navigate = useNavigate();
 
   const mediaType = selectedType || (selectedItem?.media_type === 'tv' ? 'tv' : 'movie');
-  const itemId    = selectedItem?.id;
+  const itemId = selectedItem?.id;
 
   /* ── Fetch full details ────────────────────────────────── */
   const { data: details, isLoading } = useGetDetails(mediaType, itemId);
-  const { data: providers }          = useWatchProviders(mediaType, itemId);
+  const { data: providers } = useWatchProviders(mediaType, itemId);
   const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
 
   const inList = itemId ? isInWatchlist(itemId) : false;
@@ -55,22 +55,22 @@ const DetailModal = () => {
   if (!mounted || !selectedItem) return null;
 
   /* ── Data helpers ──────────────────────────────────────── */
-  const item    = details || selectedItem;
-  const title   = item.title || item.name || '';
-  const year    = (item.release_date || item.first_air_date)?.slice(0, 4) || '';
-  const rating  = formatRating(item.vote_average);
+  const item = details || selectedItem;
+  const title = item.title || item.name || '';
+  const year = (item.release_date || item.first_air_date)?.slice(0, 4) || '';
+  const rating = formatRating(item.vote_average);
   const runtime = item.runtime ? formatRuntime(item.runtime) : item.episode_run_time?.[0] ? `${item.episode_run_time[0]}m/ep` : null;
-  const match   = Math.floor((item.vote_average / 10) * 100);
-  const overview= item.overview || '';
-  const genres  = item.genres?.map(g => g.name) || [];
+  const match = Math.floor((item.vote_average / 10) * 100);
+  const overview = item.overview || '';
+  const genres = item.genres?.map(g => g.name) || [];
 
   /* ── Cast & crew ───────────────────────────────────────── */
-  const cast     = item.credits?.cast?.slice(0, 6) || [];
+  const cast = item.credits?.cast?.slice(0, 6) || [];
   const director = item.credits?.crew?.find(c => c.job === 'Director')?.name
     || item.created_by?.[0]?.name || null;
 
   /* ── Similar ───────────────────────────────────────────── */
-  const similar  = item.similar?.results?.slice(0, 6)
+  const similar = item.similar?.results?.slice(0, 6)
     || item.recommendations?.results?.slice(0, 6) || [];
 
   /* ── Watch providers (IN region) ───────────────────────── */
@@ -79,7 +79,7 @@ const DetailModal = () => {
 
   const handleWatchlist = () => {
     if (inList) removeFromWatchlist(selectedItem.id, mediaType);
-    else        addToWatchlist(selectedItem, mediaType);
+    else addToWatchlist(selectedItem, mediaType);
   };
 
   const handlePlay = () => {
@@ -94,35 +94,35 @@ const DetailModal = () => {
         ref={overlayRef}
         onClick={(e) => { if (e.target === overlayRef.current) closeDetail(); }}
         style={{
-          position:        'fixed',
-          inset:           0,
-          zIndex:          2000,
-          background:      'rgba(0,0,0,0.85)',
-          backdropFilter:  'blur(6px)',
+          position: 'fixed',
+          inset: 0,
+          zIndex: 2000,
+          background: 'rgba(0,0,0,0.85)',
+          backdropFilter: 'blur(6px)',
           WebkitBackdropFilter: 'blur(6px)',
-          display:         'flex',
-          alignItems:      'flex-start',
-          justifyContent:  'center',
-          overflowY:       'auto',
-          padding:         '40px 16px 60px',
-          opacity:         visible ? 1 : 0,
-          transition:      'opacity 0.35s ease',
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+          overflowY: 'auto',
+          padding: '40px 16px 60px',
+          opacity: visible ? 1 : 0,
+          transition: 'opacity 0.35s ease',
         }}
       >
         {/* ── MODAL CARD ──────────────────────────────────── */}
         <div
           style={{
-            width:         '100%',
-            maxWidth:      '850px',
-            background:    '#181818',
-            borderRadius:  '12px',
-            overflow:      'hidden',
-            position:      'relative',
-            transform:     visible ? 'scale(1)' : 'scale(0.95)',
-            opacity:       visible ? 1 : 0,
-            transition:    'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.35s ease',
-            boxShadow:     '0 32px 80px rgba(0,0,0,0.9)',
-            flexShrink:    0,
+            width: '100%',
+            maxWidth: '850px',
+            background: '#181818',
+            borderRadius: '12px',
+            overflow: 'hidden',
+            position: 'relative',
+            transform: visible ? 'scale(1)' : 'scale(0.95)',
+            opacity: visible ? 1 : 0,
+            transition: 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.35s ease',
+            boxShadow: '0 32px 80px rgba(0,0,0,0.9)',
+            flexShrink: 0,
           }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -130,22 +130,22 @@ const DetailModal = () => {
           <button
             onClick={closeDetail}
             style={{
-              position:       'absolute',
-              top:            '14px',
-              right:          '14px',
-              zIndex:         10,
-              width:          '36px',
-              height:         '36px',
-              borderRadius:   '50%',
-              background:     'rgba(20,20,20,0.9)',
-              border:         '1px solid rgba(255,255,255,0.12)',
-              color:          '#fff',
-              cursor:         'pointer',
-              display:        'flex',
-              alignItems:     'center',
+              position: 'absolute',
+              top: '14px',
+              right: '14px',
+              zIndex: 10,
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              background: 'rgba(20,20,20,0.9)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              color: '#fff',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
               justifyContent: 'center',
-              fontSize:       '1rem',
-              transition:     'background 0.2s ease, transform 0.2s ease',
+              fontSize: '1rem',
+              transition: 'background 0.2s ease, transform 0.2s ease',
             }}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(50,50,50,0.95)'; e.currentTarget.style.transform = 'scale(1.1)'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(20,20,20,0.9)'; e.currentTarget.style.transform = 'scale(1)'; }}
@@ -158,7 +158,7 @@ const DetailModal = () => {
           <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', background: '#111' }}>
             {(item.backdrop_path || selectedItem.backdrop_path) && (
               <img
-                src={getImageURL(item.backdrop_path || selectedItem.backdrop_path, 'w780')}
+                src={getImageURL(item.backdrop_path || selectedItem.backdrop_path, 'w1280')}
                 alt={title}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               />
@@ -171,12 +171,12 @@ const DetailModal = () => {
             {/* Title + buttons on image */}
             <div style={{ position: 'absolute', bottom: '24px', left: '28px', right: '60px' }}>
               <h1 style={{
-                color:        '#fff',
-                fontWeight:   800,
-                fontSize:     'clamp(1.4rem, 3.5vw, 2.2rem)',
-                lineHeight:   1.15,
+                color: '#fff',
+                fontWeight: 800,
+                fontSize: 'clamp(1.4rem, 3.5vw, 2.2rem)',
+                lineHeight: 1.15,
                 marginBottom: '16px',
-                textShadow:   '0 2px 12px rgba(0,0,0,0.8)',
+                textShadow: '0 2px 12px rgba(0,0,0,0.8)',
               }}>
                 {title}
               </h1>
@@ -186,11 +186,11 @@ const DetailModal = () => {
                 <button
                   onClick={handlePlay}
                   style={{
-                    display:     'flex', alignItems: 'center', gap: '8px',
-                    background:  '#fff', color: '#000',
-                    border:      'none', borderRadius: '6px',
-                    padding:     '10px 24px', fontWeight: 700, fontSize: '0.95rem',
-                    cursor:      'pointer', transition: 'background 0.2s ease',
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    background: '#fff', color: '#000',
+                    border: 'none', borderRadius: '6px',
+                    padding: '10px 24px', fontWeight: 700, fontSize: '0.95rem',
+                    cursor: 'pointer', transition: 'background 0.2s ease',
                   }}
                   onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.85)'}
                   onMouseLeave={e => e.currentTarget.style.background = '#fff'}
@@ -201,14 +201,14 @@ const DetailModal = () => {
                 <button
                   onClick={handleWatchlist}
                   style={{
-                    display:        'flex', alignItems: 'center', gap: '8px',
-                    background:     'rgba(255,255,255,0.15)',
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    background: 'rgba(255,255,255,0.15)',
                     backdropFilter: 'blur(8px)',
-                    color:          '#fff',
-                    border:         '1px solid rgba(255,255,255,0.35)',
-                    borderRadius:   '6px',
-                    padding:        '10px 20px', fontWeight: 600, fontSize: '0.9rem',
-                    cursor:         'pointer', transition: 'background 0.2s ease',
+                    color: '#fff',
+                    border: '1px solid rgba(255,255,255,0.35)',
+                    borderRadius: '6px',
+                    padding: '10px 20px', fontWeight: 600, fontSize: '0.9rem',
+                    cursor: 'pointer', transition: 'background 0.2s ease',
                   }}
                   onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.25)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
@@ -334,9 +334,9 @@ const DetailModal = () => {
                 More Like This
               </h3>
               <div style={{
-                display:             'grid',
+                display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)',
-                gap:                 '10px',
+                gap: '10px',
               }} className="ns-modal-similar">
                 {similar.map(s => (
                   <div key={s.id} onClick={() => { closeDetail(); setTimeout(() => useUIStore.getState().openDetail(s, mediaType), 50); }}>

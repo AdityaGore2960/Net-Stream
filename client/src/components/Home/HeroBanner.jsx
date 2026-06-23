@@ -13,8 +13,8 @@ const GENRE_MAP = {
 
 const HeroBanner = ({ movies }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFading, setIsFading]         = useState(false);
-  const [muted, setMuted]               = useState(true);
+  const [isFading, setIsFading] = useState(false);
+  const [muted, setMuted] = useState(true);
   const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
   const { openDetail } = useUIStore();
 
@@ -42,12 +42,12 @@ const HeroBanner = ({ movies }) => {
     );
   }
 
-  const movie   = movies[currentIndex];
-  const inList  = isInWatchlist(movie.id);
-  const title   = movie.title || movie.name;
-  const year    = (movie.release_date || movie.first_air_date)?.slice(0, 4);
-  const genres  = (movie.genre_ids || []).slice(0, 3).map((id) => GENRE_MAP[id]).filter(Boolean);
-  const rating  = formatRating(movie.vote_average);
+  const movie = movies[currentIndex];
+  const inList = isInWatchlist(movie.id);
+  const title = movie.title || movie.name;
+  const year = (movie.release_date || movie.first_air_date)?.slice(0, 4);
+  const genres = (movie.genre_ids || []).slice(0, 3).map((id) => GENRE_MAP[id]).filter(Boolean);
+  const rating = formatRating(movie.vote_average);
   const overview = movie.overview?.length > 200
     ? movie.overview.slice(0, 197) + '…'
     : movie.overview;
@@ -66,13 +66,13 @@ const HeroBanner = ({ movies }) => {
       <div
         className="absolute inset-0"
         style={{
-          opacity:    isFading ? 0 : 1,
+          opacity: isFading ? 0 : 1,
           transition: 'opacity 0.45s ease-in-out',
         }}
       >
         <img
           key={movie.id}
-          src={getImageURL(movie.backdrop_path, 'w780')}
+          src={getImageURL(movie.backdrop_path, 'w1280')}
           alt={title}
           className="w-full h-full object-cover object-top"
           draggable={false}
@@ -109,11 +109,11 @@ const HeroBanner = ({ movies }) => {
       <div
         className="absolute left-0 bottom-0 w-full md:w-[62%] lg:w-[52%]"
         style={{
-          padding:     '0 4% 9%',
-          zIndex:      10,
-          opacity:     isFading ? 0 : 1,
-          transform:   isFading ? 'translateY(14px)' : 'translateY(0)',
-          transition:  'opacity 0.45s ease, transform 0.45s ease',
+          padding: '0 4% 9%',
+          zIndex: 10,
+          opacity: isFading ? 0 : 1,
+          transform: isFading ? 'translateY(14px)' : 'translateY(0)',
+          transition: 'opacity 0.45s ease, transform 0.45s ease',
         }}
       >
         {/* Maturity + Genre chips */}
@@ -152,12 +152,12 @@ const HeroBanner = ({ movies }) => {
         {/* Title */}
         <h1
           style={{
-            fontSize:      'clamp(2rem, 5vw, 3.8rem)',
-            fontWeight:    900,
-            lineHeight:    1.05,
+            fontSize: 'clamp(2rem, 5vw, 3.8rem)',
+            fontWeight: 900,
+            lineHeight: 1.05,
             letterSpacing: '-0.02em',
-            textShadow:    '0 2px 18px rgba(0,0,0,0.6)',
-            marginBottom:  '0.6rem',
+            textShadow: '0 2px 18px rgba(0,0,0,0.6)',
+            marginBottom: '0.6rem',
           }}
         >
           {title}
@@ -183,11 +183,11 @@ const HeroBanner = ({ movies }) => {
         <p
           className="mb-7 hidden sm:block"
           style={{
-            fontSize:   'clamp(0.85rem, 1.3vw, 1rem)',
-            lineHeight:  1.6,
-            color:       'rgba(255,255,255,0.8)',
-            maxWidth:    480,
-            textShadow:  '0 1px 8px rgba(0,0,0,0.5)',
+            fontSize: 'clamp(0.85rem, 1.3vw, 1rem)',
+            lineHeight: 1.6,
+            color: 'rgba(255,255,255,0.8)',
+            maxWidth: 480,
+            textShadow: '0 1px 8px rgba(0,0,0,0.5)',
           }}
         >
           {overview}
@@ -199,19 +199,19 @@ const HeroBanner = ({ movies }) => {
           <Link
             to={`/${movie.media_type === 'tv' ? 'tv' : 'movie'}/${movie.id}`}
             style={{
-              display:        'flex',
-              alignItems:     'center',
-              gap:            '8px',
-              background:     '#ffffff',
-              color:          '#000000',
-              padding:        '10px 26px',
-              borderRadius:   6,
-              fontWeight:     700,
-              fontSize:       '0.95rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: '#ffffff',
+              color: '#000000',
+              padding: '10px 26px',
+              borderRadius: 6,
+              fontWeight: 700,
+              fontSize: '0.95rem',
               textDecoration: 'none',
-              letterSpacing:  '0.01em',
-              transition:     'background 0.2s ease, transform 0.15s ease',
-              whiteSpace:     'nowrap',
+              letterSpacing: '0.01em',
+              transition: 'background 0.2s ease, transform 0.15s ease',
+              whiteSpace: 'nowrap',
             }}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.85)'; e.currentTarget.style.transform = 'scale(1.03)'; }}
             onMouseLeave={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.transform = 'scale(1)'; }}
@@ -224,20 +224,20 @@ const HeroBanner = ({ movies }) => {
           <button
             onClick={() => openDetail(movie, movie.media_type || 'movie')}
             style={{
-              display:     'flex',
-              alignItems:  'center',
-              gap:         '8px',
-              background:  'rgba(109,109,110,0.7)',
-              color:       '#ffffff',
-              padding:     '10px 22px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(109,109,110,0.7)',
+              color: '#ffffff',
+              padding: '10px 22px',
               borderRadius: 6,
-              fontWeight:  700,
-              fontSize:    '0.95rem',
-              border:      'none',
-              cursor:      'pointer',
+              fontWeight: 700,
+              fontSize: '0.95rem',
+              border: 'none',
+              cursor: 'pointer',
               backdropFilter: 'blur(6px)',
-              transition:  'background 0.2s ease, transform 0.15s ease',
-              whiteSpace:  'nowrap',
+              transition: 'background 0.2s ease, transform 0.15s ease',
+              whiteSpace: 'nowrap',
             }}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(109,109,110,0.9)'; e.currentTarget.style.transform = 'scale(1.03)'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(109,109,110,0.7)'; e.currentTarget.style.transform = 'scale(1)'; }}
@@ -251,25 +251,25 @@ const HeroBanner = ({ movies }) => {
             onClick={toggleWatchlist}
             title={inList ? 'Remove from My List' : 'Add to My List'}
             style={{
-              width:        42,
-              height:       42,
+              width: 42,
+              height: 42,
               borderRadius: '50%',
-              background:   'rgba(42,42,42,0.7)',
-              border:       '2px solid rgba(255,255,255,0.5)',
-              color:        '#ffffff',
-              display:      'flex',
-              alignItems:   'center',
+              background: 'rgba(42,42,42,0.7)',
+              border: '2px solid rgba(255,255,255,0.5)',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
               justifyContent: 'center',
-              cursor:       'pointer',
-              transition:   'border-color 0.2s ease, transform 0.15s ease',
-              flexShrink:   0,
+              cursor: 'pointer',
+              transition: 'border-color 0.2s ease, transform 0.15s ease',
+              flexShrink: 0,
             }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#fff'; e.currentTarget.style.transform = 'scale(1.1)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'; e.currentTarget.style.transform = 'scale(1)'; }}
           >
             {inList
-              ? <FaCheck  style={{ fontSize: '0.85rem', color: '#4ade80' }} />
-              : <FaPlus   style={{ fontSize: '0.85rem' }} />
+              ? <FaCheck style={{ fontSize: '0.85rem', color: '#4ade80' }} />
+              : <FaPlus style={{ fontSize: '0.85rem' }} />
             }
           </button>
         </div>
@@ -279,21 +279,21 @@ const HeroBanner = ({ movies }) => {
       <button
         onClick={() => setMuted((m) => !m)}
         style={{
-          position:     'absolute',
-          right:        '4%',
-          bottom:       '9%',
-          zIndex:       20,
-          width:        38,
-          height:       38,
+          position: 'absolute',
+          right: '4%',
+          bottom: '9%',
+          zIndex: 20,
+          width: 38,
+          height: 38,
           borderRadius: '50%',
-          background:   'rgba(42,42,42,0.7)',
-          border:       '1.5px solid rgba(255,255,255,0.4)',
-          color:        '#fff',
-          display:      'flex',
-          alignItems:   'center',
+          background: 'rgba(42,42,42,0.7)',
+          border: '1.5px solid rgba(255,255,255,0.4)',
+          color: '#fff',
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'center',
-          cursor:       'pointer',
-          transition:   'border-color 0.2s ease',
+          cursor: 'pointer',
+          transition: 'border-color 0.2s ease',
         }}
         onMouseEnter={e => e.currentTarget.style.borderColor = '#fff'}
         onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'}
@@ -301,7 +301,7 @@ const HeroBanner = ({ movies }) => {
       >
         {muted
           ? <FaVolumeMute style={{ fontSize: '0.85rem' }} />
-          : <FaVolumeUp   style={{ fontSize: '0.85rem' }} />
+          : <FaVolumeUp style={{ fontSize: '0.85rem' }} />
         }
       </button>
 
@@ -309,14 +309,14 @@ const HeroBanner = ({ movies }) => {
       {TOTAL > 1 && (
         <div
           style={{
-            position:       'absolute',
-            bottom:         '6.5%',
-            right:          '4%',
-            marginRight:    52,
-            zIndex:         20,
-            display:        'flex',
-            alignItems:     'center',
-            gap:            6,
+            position: 'absolute',
+            bottom: '6.5%',
+            right: '4%',
+            marginRight: 52,
+            zIndex: 20,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
           }}
         >
           {Array.from({ length: TOTAL }).map((_, i) => (
@@ -325,14 +325,14 @@ const HeroBanner = ({ movies }) => {
               onClick={() => goTo(i)}
               aria-label={`Go to slide ${i + 1}`}
               style={{
-                width:        i === currentIndex ? 22 : 6,
-                height:       6,
+                width: i === currentIndex ? 22 : 6,
+                height: 6,
                 borderRadius: 3,
-                background:   i === currentIndex ? '#e50914' : 'rgba(255,255,255,0.35)',
-                border:       'none',
-                cursor:       'pointer',
-                padding:      0,
-                transition:   'width 0.35s ease, background 0.35s ease',
+                background: i === currentIndex ? '#e50914' : 'rgba(255,255,255,0.35)',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                transition: 'width 0.35s ease, background 0.35s ease',
               }}
             />
           ))}
