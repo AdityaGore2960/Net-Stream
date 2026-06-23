@@ -47,14 +47,14 @@ const corsOptions = {
     if (!origin) {
       return callback(null, true);
     }
-    
+
     if (
       allowedOrigins.includes(origin) ||
       origin.endsWith(".vercel.app")
     ) {
       return callback(null, true);
     }
-    
+
     callback(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
@@ -82,9 +82,11 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 
 // Global rate limiter — generous for SPA usage (500 req / 15 min)
+// Trust the reverse proxy (Render) to correctly provide client IPs via X-Forwarded-For
+app.set('trust proxy', 1);
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 500,
+  max: 1000,
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many requests, please try again later.' },
@@ -102,10 +104,10 @@ const authLimiter = rateLimit({
   message: { success: false, message: 'Too many login attempts, please try again after 15 minutes.' },
   skip: () => process.env.NODE_ENV === 'development', // disable in dev
 });
-app.use('/api/auth/login',    authLimiter);
+app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 // /api/auth/me is called on every app load — protect it in prod too
-app.use('/api/auth/me',       authLimiter);
+app.use('/api/auth/me', authLimiter);
 
 // ==========================================
 // DATABASE CONNECTION
@@ -155,12 +157,12 @@ app.use('/api/watchlist', watchlistRoutes);
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || 'Internal Server Error';
-  
+
   if (process.env.NODE_ENV === 'development') {
     console.error(`[Error] ${statusCode} - ${message}`);
     console.error(err.stack);
   }
-  
+
   res.status(statusCode).json({
     success: false,
     message,
