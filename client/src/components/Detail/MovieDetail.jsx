@@ -58,7 +58,7 @@ const MovieDetail = ({ item, mediaType }) => {
       <div className="relative w-full h-auto min-h-[70vh] bg-ns-black flex flex-col justify-end">
         <div className="absolute inset-0 z-0">
           <img
-            src={getImageURL(item.backdrop_path, 'original')}
+            src={getImageURL(item.backdrop_path, 'w1280')}
             alt={title}
             className="w-full h-full object-cover opacity-30"
           />
