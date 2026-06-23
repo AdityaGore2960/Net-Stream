@@ -95,7 +95,7 @@ const MovieCardHover = ({ item, mediaType, parentRef, isLarge, onMouseLeave }) =
       {/* Video/Image Header */}
       <div className="relative aspect-video w-full bg-ns-dark">
         <img
-          src={getImageURL(item.backdrop_path || item.poster_path, 'w500')}
+          src={getImageURL(item.backdrop_path || item.poster_path, 'w300')}
           alt={item.title || item.name}
           className="w-full h-full object-cover"
         />

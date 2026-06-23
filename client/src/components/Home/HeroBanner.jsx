@@ -72,7 +72,7 @@ const HeroBanner = ({ movies }) => {
       >
         <img
           key={movie.id}
-          src={getImageURL(movie.backdrop_path, 'w1280')}
+          src={getImageURL(movie.backdrop_path, 'w780')}
           alt={title}
           className="w-full h-full object-cover object-top"
           draggable={false}

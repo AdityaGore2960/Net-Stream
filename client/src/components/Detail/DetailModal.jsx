@@ -158,7 +158,7 @@ const DetailModal = () => {
           <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', background: '#111' }}>
             {(item.backdrop_path || selectedItem.backdrop_path) && (
               <img
-                src={getImageURL(item.backdrop_path || selectedItem.backdrop_path, 'w1280')}
+                src={getImageURL(item.backdrop_path || selectedItem.backdrop_path, 'w780')}
                 alt={title}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               />

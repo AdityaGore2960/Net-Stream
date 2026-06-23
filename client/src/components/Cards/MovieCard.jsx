@@ -34,7 +34,7 @@ const MovieCard = ({ item, mediaType = 'movie', isLarge = false }) => {
   const matchColor = MATCH_COLORS[item.id % MATCH_COLORS.length];
 
   const imgPath = item.poster_path || item.backdrop_path;
-  const imgUrl  = getImageURL(imgPath, 'w500');
+  const imgUrl  = getImageURL(imgPath, 'w300');
 
   const handleClick     = () => openDetail(item, mediaType);
   const handleWatchlist = (e) => {

@@ -58,7 +58,7 @@ const MovieDetail = ({ item, mediaType }) => {
       <div className="relative w-full h-auto min-h-[70vh] bg-ns-black flex flex-col justify-end">
         <div className="absolute inset-0 z-0">
           <img
-            src={getImageURL(item.backdrop_path, 'w1280')}
+            src={getImageURL(item.backdrop_path, 'w780')}
             alt={title}
             className="w-full h-full object-cover opacity-30"
           />
@@ -70,7 +70,7 @@ const MovieDetail = ({ item, mediaType }) => {
           {/* Poster - hidden on small mobile, visible on md+ */}
           <div className="hidden md:block w-48 lg:w-64 flex-shrink-0">
             <img
-              src={getImageURL(item.poster_path, 'w500')}
+              src={getImageURL(item.poster_path, 'w300')}
               alt={title}
               className="w-full rounded-lg shadow-2xl border border-white/10"
             />
