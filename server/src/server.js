@@ -31,6 +31,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 // responses include the correct Access-Control-* headers.
 const allowedOrigins = [
   process.env.CLIENT_URL,
+  'https://net-stream-7jti4k5wy-adityagore2960s-projects.vercel.app',
   'https://net-stream-ten.vercel.app',
   'https://net-stream-navy.vercel.app',
   'http://localhost:5173',
@@ -43,11 +44,18 @@ const allowedOrigins = [
 const corsOptions = {
   origin: (origin, callback) => {
     // Allow server-to-server / curl requests (no origin header)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`CORS: origin ${origin} not allowed`));
+    if (!origin) {
+      return callback(null, true);
     }
+    
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith(".vercel.app")
+    ) {
+      return callback(null, true);
+    }
+    
+    callback(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
